@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  build-and-test:
+  build-test-train:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,7 +23,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Basic syntax check
+      - name: Syntax check
         run: |
-          python -m compileall app.py
+          python -m compileall app.py train_model.py serve_model.py
 
+      - name: Run training script (smoke test)
+        run: |
+          python train_model.py
+
+      - name: Build Docker image
+        run: |
+          docker build -t wd-ml-model-server .
